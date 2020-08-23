@@ -7,4 +7,14 @@
     <string name="message_is_sent">The message is sent</string>
     <string name="message_is_empty">Enter message!</string>
     <string name="phone_is_empty">Enter phone number!</string>
+    <string name="app_need_permission_for_calls">You need to allow Calls permission.\n
+        If you disable this permission, You will not able to use function \"To call\"!\n
+        Allow?</string>
+    <string name="app_need_permission_for_message_send">You need to allow Message send permission.\n
+        If you disable this permission, You will not able to use function \"Send message\"!\n
+        Allow?</string>
+    <string name="btn_dialog_cancel">Cancel</string>
+    <string name="btn_dialog_allow">Allow</string>
+    <string name="call_function_not_available">Function \"To call\" is not available</string>
+    <string name="send_function_not_available">Function \"Send message\" is not available</string>
 </resources>

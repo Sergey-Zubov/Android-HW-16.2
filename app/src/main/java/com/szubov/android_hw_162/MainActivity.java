@@ -1,10 +1,12 @@
 package com.szubov.android_hw_162;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -48,10 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.CALL_PHONE) !=
                         PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.CALL_PHONE},
-                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
-                }else {
+                    requestPermissionForCall();
+                } else {
                     callByNumber();
                 }
                 break;
@@ -60,13 +60,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (ContextCompat.checkSelfPermission(MainActivity.this,
                         Manifest.permission.SEND_SMS) !=
                         PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.SEND_SMS},
-                            MY_PERMISSIONS_REQUEST_SEND_MESSAGE);
+                    requestPermissionForSendMessage();
                 }else {
                     sendByNumber();
                 }
                 break;
+        }
+    }
+
+    private void requestPermissionForCall() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                Manifest.permission.CALL_PHONE)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(R.string.app_need_permission_for_calls).
+                    setPositiveButton(R.string.btn_dialog_allow,
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.CALL_PHONE},
+                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
+                }
+            })
+            .setNegativeButton(R.string.btn_dialog_cancel,
+                    new DialogInterface.OnClickListener() {
+                 @Override
+                 public void onClick(DialogInterface dialog, int which) {
+                     Toast.makeText(MainActivity.this, R.string.call_function_not_available,
+                             Toast.LENGTH_SHORT).show();
+                 }
+            }).create();
+            builder.show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_CALL_PHONE);
+        }
+    }
+
+    private void requestPermissionForSendMessage() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                Manifest.permission.SEND_SMS)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(R.string.app_need_permission_for_message_send).
+                    setPositiveButton(R.string.btn_dialog_allow,
+                    new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                           ActivityCompat.requestPermissions(MainActivity.this,
+                           new String[]{Manifest.permission.SEND_SMS},
+                           MY_PERMISSIONS_REQUEST_SEND_MESSAGE);
+                    }
+            })
+            .setNegativeButton(R.string.btn_dialog_cancel,
+                    new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                           Toast.makeText(MainActivity.this,
+                           R.string.send_function_not_available, Toast.LENGTH_SHORT).show();
+                    }
+            }).create();
+            builder.show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_MESSAGE);
         }
     }
 
@@ -124,16 +182,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(LOG_TAG, "MainActivity -> onRequestPermissionsResult -> CALL_PHONE");
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     callByNumber();
-                } else {
-                    finish();
                 }
+                break;
             case MY_PERMISSIONS_REQUEST_SEND_MESSAGE:
                 Log.d(LOG_TAG, "MainActivity -> onRequestPermissionsResult -> SEND_MESSAGE");
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     sendByNumber();
-                } else {
-                    finish();
                 }
+                break;
         }
     }
+
+
 }
